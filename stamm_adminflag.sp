@@ -44,8 +44,7 @@ public Plugin:myinfo =
 	description = "Give VIP's Admin Flags",
 	url = "https://forums.alliedmods.net/showthread.php?t=142073"
 };
-
-
+g_bDebug = true;
 
 
 // Add feature
@@ -108,10 +107,18 @@ public STAMM_OnClientRequestFeatureInfo(client, block, &Handle:array)
 
 
 
-public STAMM_OnClientReady(client)
+public OnClientPostAdminFilter(client)
 {
+	if(g_bDebug)
+	{
+		PrintToChatAll("[STAMM-ADMINFLAGS] Somones admin permissions will get checked soon!");
+	}
 	if (STAMM_IsClientValid(client))
 	{
+		if(g_bDebug)
+		{
+			PrintToChatAll("[STAMM-ADMINFLAGS] He is valid!");
+		}
 		decl String:theflags[64];
 		new bytes;
 
@@ -123,6 +130,10 @@ public STAMM_OnClientReady(client)
 
 		if (!StrEqual(theflags, "") && theflags[0] != '\0') 
 		{
+			if(g_bDebug)
+			{
+				PrintToChatAll("[STAMM-ADMINFLAGS] He should recive VIP flags!");
+			}
 			// Get bits of the string
 			bytes = ReadFlagString(theflags);
 
@@ -130,11 +141,20 @@ public STAMM_OnClientReady(client)
 			if (bytes)
 			{
 				// We have to reset admin flags before and change flags on rebuild
-				DumpAdminCache(AdminCache_Admins, true);
+				//DumpAdminCache(AdminCache_Admins, true);
 
 				SetUserFlagBits(client, bytes | GetUserFlagBits(client));
+				if(g_bDebug)
+				{
+					PrintToChatAll("[STAMM-ADMINFLAGS] I'm setting his flags!");
+				}
 			}
 		}
+		return;
+	}
+	if(g_bDebug)
+	{
+		PrintToChatAll("[STAMM-ADMINFLAGS] But I can't handle him :/");
 	}
 }
 
@@ -142,7 +162,7 @@ public STAMM_OnClientReady(client)
 
 
 // Give VIP's flags again on rebuild
-public OnRebuildAdminCache(AdminCachePart:part)
+/*public OnRebuildAdminCache(AdminCachePart:part)
 {
 	if (part == AdminCache_Admins)
 	{
@@ -173,14 +193,14 @@ public OnRebuildAdminCache(AdminCachePart:part)
 			}
 		}
 	}
-}
+}*/
 
 
 
 
 public STAMM_OnClientBecomeVip(client, oldlevel, newlevel)
 {
-	STAMM_OnClientReady(client);
+	//STAMM_OnClientReady(client);
 }
 
 
